@@ -21,7 +21,7 @@ And then execute:
     # add a white fill layer
     fill('white')
 
-    # add an image layer from a remote source on top of that
+    # add an image layer from a remote source (can also be a local path) on top of that
     # resize it and place it at to x: 25, y: 25
     image("http://baconmockup.com/400/400", size: '350x', offset: [25,25])
 
