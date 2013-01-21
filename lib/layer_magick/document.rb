@@ -25,17 +25,19 @@ module LayerMagick
       options = {:width => @width}.merge(options)
       size = "#{options[:width]}x#{options[:height]}"
       left, top = options[:offset] || [0,0]
+      
       img = Magick::Image.read("caption:#{str}") do
         # see http://www.imagemagick.org/RMagick/doc/info.html for options
         self.size = size
         self.background_color = 'transparent'
-        self.gravity = Magick::CenterGravity
+        self.gravity = options[:gravity] || Magick::CenterGravity
         self.font = options[:font] if options[:font]
+        self.fill = options[:color] || 'red'
         yield(self) if block_given?
       end.first
 
       # position the image
-      img.page = Magick::Rectangle.new(img.rows, img.columns, left, top)
+      img.page = Magick::Rectangle.new(img.columns,img.rows,left,top)
 
       add_layer img
     end
@@ -47,7 +49,7 @@ module LayerMagick
       img = Magick::Image.read(path).first
 
       #position the image
-      img.page = Magick::Rectangle.new(img.rows,img.columns,left,top)
+      img.page = Magick::Rectangle.new(img.columns,img.rows,left,top)
       
       # adjust size
       if options[:size]
@@ -55,15 +57,19 @@ module LayerMagick
           i.resize!(cols, rows)
         }
       end
-
+      
       # give the user the chance to do more with the image
       yield(img) if block_given?
 
       add_layer img
     end
 
-    def fill(color = 'transparent')
-      add_layer new_layer(color)
+    def fill(color = 'transparent', &block)
+      img = Magick::Image.new(@width, @height) do
+        self.background_color = color
+      end
+      yield(img) if block_given?
+      add_layer img
     end
 
     def flattened
@@ -72,25 +78,16 @@ module LayerMagick
 
     # e.g.
     # save_as('foo.png')
-    # => Tempfile
-    def write_temp(name)
-      temp = Temp::Local.new(name)
-      write(temp.path)
-      temp
+    # => LayerMagick::Temp::Local
+    def save_as(name)
+      write_temp name, flattened
     end
 
-    def write(path)
-      flattened.write(path)
-      File.open(path)
-    end
-
-    # returns a new Magick::Image
-    # up to you what you do with that
-    def thumbnail(name, width, height, gravity = Magick::CenterGravity, &block)
-      thm = flattened.resize_to_fill(width,height,gravity)
-      temp = Temp::Local.new(name)
-      thm.write(temp.path)
-      temp
+    # e.g.
+    # save_thumbnail_as('foo_thumbnail.png')
+    # => LayerMagick::Temp::Local
+    def save_thumbnail_as(name, width, height, gravity = Magick::CenterGravity)
+      write_temp name, flattened.resize_to_fill(width,height,gravity)
     end
 
     private
@@ -101,10 +98,10 @@ module LayerMagick
       layer
     end
 
-    def new_layer(fill = 'transparent')
-      Magick::Image.new(@width,@height) do
-        self.background_color = fill
-      end
+    def write_temp(name, image)
+      temp = Temp::Local.new(name)
+      image.write(temp.path)
+      temp
     end
 
   end
