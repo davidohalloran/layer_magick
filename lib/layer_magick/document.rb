@@ -52,9 +52,6 @@ module LayerMagick
       left, top = options[:offset] || [0,0]
       raise ImageNotFound.new("The file (#{path}) does not exist.") unless File.exist?(path)
       img = Magick::Image.read(path).first
-
-      #position the image
-      img.page = Magick::Rectangle.new(img.columns,img.rows,left,top)
       
       # adjust size
       if options[:size]
@@ -63,8 +60,11 @@ module LayerMagick
         }
       end
       
-      # give the user the chance to do more with the image
+      # give the user the chance to do more witeh the image
       yield(img) if block_given?
+      
+      #position the image
+      img.page = Magick::Rectangle.new(img.columns,img.rows,left,top)
 
       add_layer img
     end
