@@ -43,7 +43,7 @@ module LayerMagick
     end
 
     def image(path, options = {}, &block)
-      path = Temp::Remote.new(path).path if path.match(/^(https?|ftp):/)
+      path = Temp::Remote.new(path).path if path.to_s.match(/^(https?|ftp):/)
       left, top = options[:offset] || [0,0]
 
       img = Magick::Image.read(path).first
