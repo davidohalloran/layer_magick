@@ -23,6 +23,8 @@ And then execute:
 
     # add an image layer from a remote source (can also be a local path) on top of that
     # resize it and place it at to x: 25, y: 25
+    # optionally takes a block which passes through an Magick::Image
+    # with which you can do wonderous things http://www.imagemagick.org/RMagick/doc/image1.html
     image("http://baconmockup.com/400/400", size: '350x', offset: [25,25])
 
     # add a text layer on top of that
