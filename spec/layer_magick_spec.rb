@@ -32,4 +32,20 @@ describe LayerMagick do
     system "open ~/Desktop/layer_magick_test2.png"
 
   end
+
+  it "should work with local files too" do
+    clown = File.expand_path(File.dirname(__FILE__)) + '/clown.jpg'
+
+    doc = LayerMagick::Document.new(width: 400, height: 450) do
+      # add a white fill layer
+      fill('white')
+      image(clown, :offset => [50,50]) do |img|
+        img.rotate! -5
+      end
+    end
+
+    image = doc.save_as('test.png')
+    FileUtils.mv image.path, "#{ENV['HOME']}/Desktop/layer_magick_test1.png"
+    system "open ~/Desktop/layer_magick_test1.png"
+  end
 end
