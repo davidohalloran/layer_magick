@@ -45,7 +45,23 @@ describe LayerMagick do
     end
 
     image = doc.save_as('test.png')
-    FileUtils.mv image.path, "#{ENV['HOME']}/Desktop/layer_magick_test1.png"
-    system "open ~/Desktop/layer_magick_test1.png"
+    FileUtils.mv image.path, "#{ENV['HOME']}/Desktop/layer_magick_test3.png"
+    system "open ~/Desktop/layer_magick_test3.png"
+  end
+
+
+  it "should bail when files don't exist" do
+    clown = File.expand_path(File.dirname(__FILE__)) + '/noclown.jpg'
+
+    doc = LayerMagick::Document.new(width: 400, height: 450)
+
+    expect {
+      doc.image(clown, :offset => [50,50])
+    }.to raise_error LayerMagick::ImageNotFound
+
+    expect {
+      doc.image("http://examle.com/nothing.jpg")
+    }.to raise_error LayerMagick::InvalidType
+
   end
 end

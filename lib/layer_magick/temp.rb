@@ -44,6 +44,8 @@ module LayerMagick
         self.write string_io.read
         self.rewind
         self
+      rescue OpenURI::HTTPError => e
+        raise ImageNotFound.new("The remote image #{@remote_path} could not be loaded.\n\t => #{e.message}")
       end
       
     end

@@ -43,9 +43,14 @@ module LayerMagick
     end
 
     def image(path, options = {}, &block)
-      path = Temp::Remote.new(path).path if path.to_s.match(/^(https?|ftp):/)
+      path = path.to_s
+      if path.match(/^(https?|ftp):/)
+        remote = Temp::Remote.new(path)
+        raise InvalidType.new("File #{path} is not the correct type\n\t => found #{remote.content_type}") unless remote.content_type.match(/image/)
+        path = remote.path
+      end 
       left, top = options[:offset] || [0,0]
-
+      raise ImageNotFound.new("The file (#{path}) does not exist.") unless File.exist?(path)
       img = Magick::Image.read(path).first
 
       #position the image
