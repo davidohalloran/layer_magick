@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = LayerMagick::VERSION
   gem.authors       = ["John Butler"]
   gem.email         = ["johnnypez@gmail.com"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{A simple wrapper for RMagick that lets us do what we do in style}
+  gem.summary       = %q{A simple wrapper for RMagick that lets us do what we do in style}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
