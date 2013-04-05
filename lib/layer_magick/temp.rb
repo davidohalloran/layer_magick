@@ -34,7 +34,7 @@ module LayerMagick
      
       def initialize(path, tmpdir = Dir::tmpdir)
         @remote_path        = path
-        super Digest::SHA1.hexdigest(path), tmpdir
+        super path, tmpdir
         binmode
         fetch
       end
