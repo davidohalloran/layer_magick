@@ -1,4 +1,4 @@
-require "rmagick"
+require "RMagick"
 require "pathname"
 require "layer_magick/temp"
 require "layer_magick/version"
